@@ -5,6 +5,8 @@ import App from 'next/app';
 import Head from 'next/head';
 import React from 'react';
 import { Nav } from '../components/Nav';
+import { SWRConfig } from 'swr';
+import axios from 'axios';
 
 // Create a theme instance.
 export const theme = createMuiTheme({
@@ -20,6 +22,8 @@ export const theme = createMuiTheme({
     }
   }
 });
+
+axios.defaults.baseURL = "http://localhost:4001";
 
 export default class MyApp extends App {
   componentDidMount() {
@@ -46,11 +50,13 @@ export default class MyApp extends App {
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <Nav />
+          <SWRConfig value={{fetcher: (url: string) => axios(url).then(r => r.data)}}>
           <Container maxWidth={false}>
             <Box marginTop={2}>
               <Component {...pageProps} />
             </Box>
           </Container>
+          </SWRConfig>
         </ThemeProvider>
       </React.Fragment>
     );

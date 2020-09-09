@@ -1,15 +1,22 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import React from 'react';
-import { AddComment } from './AddComment';
+import {
+  Box,
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import React from "react";
+import { AddComment } from "./AddComment";
+import useSWR, { mutate, trigger } from "swr";
+import axios from "axios";
 
-const data = [
-  { comment: 'This is the first comment', id: 1 },
-  { comment: 'This is the second comment', id: 2 },
-  { comment: 'This is the third comment', id: 3 }
-];
-
-export function Home() {
+export function Home({ comments }: any) {
+  const { data } = useSWR("/comments", { initialData: comments });
   return (
     <React.Fragment>
       <Box marginBottom={2}>
@@ -26,7 +33,7 @@ export function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(row => (
+            {data?.map((row) => (
               <TableRow key={row.comment}>
                 <TableCell component="th" scope="row">
                   {row.id}
@@ -37,6 +44,15 @@ export function Home() {
                     variant="contained"
                     color="secondary"
                     startIcon={<DeleteIcon />}
+                    onClick={async () => {
+                      mutate(
+                        "/comments",
+                        data.filter((d) => d.id !== row.id),
+                        false
+                      );
+                      await axios.delete(`/comments/${row.id}`);
+                      trigger("/comments");
+                    }}
                   >
                     Delete
                   </Button>
@@ -48,4 +64,9 @@ export function Home() {
       </TableContainer>
     </React.Fragment>
   );
+}
+
+Home.getInitialProps = async (ctx) => {
+  const { data } = await axios("/comments");
+  return { comments: data }
 }

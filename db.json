@@ -1,20 +1,20 @@
 {
   "comments": [
     {
-      "id": 1,
-      "comment": "First Server Comment"
+      "comment": "tijana",
+      "id": 6
     },
     {
-      "id": 2,
-      "comment": "Second Server Comment"
+      "comment": "bor",
+      "id": 8
     },
     {
-      "id": 3,
-      "comment": "Third Server Comment"
+      "comment": "naum",
+      "id": 9
     },
     {
-      "id": 4,
-      "comment": "Fourth Server Comment"
+      "comment": "daniel",
+      "id": 10
     }
   ]
 }

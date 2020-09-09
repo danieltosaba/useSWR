@@ -1,19 +1,30 @@
-import { Box, Button, FormGroup, TextField } from '@material-ui/core';
-import { Field, Form, Formik } from 'formik';
-import React from 'react';
+import { Box, Button, FormGroup, TextField } from "@material-ui/core";
+import { Field, Form, Formik } from "formik";
+import React from "react";
+import axios from "axios";
+import useSWR, { mutate, trigger } from "swr";
 
 export function AddComment() {
+  const { data } = useSWR("/comments");
+
   return (
     <Formik
-      initialValues={{ comment: '' }}
-      onSubmit={(values, formikHelpers) => {
+      initialValues={{ comment: "" }}
+      onSubmit={async (values, formikHelpers) => {
+        mutate('/comments', [...data, values], false);
+        await axios.post("/comments", values);
+        trigger("/comments");
         formikHelpers.resetForm();
-        alert(`Yes! Comment "${values.comment}" added!`);
       }}
     >
       <Form>
         <FormGroup>
-          <Field autoComplete="off" as={TextField} name="comment" label="Comment" />
+          <Field
+            autoComplete="off"
+            as={TextField}
+            name="comment"
+            label="Comment"
+          />
         </FormGroup>
 
         <Box marginTop={1}>
